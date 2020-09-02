@@ -2,16 +2,16 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 require('dotenv').config();
 const prefix = process.env.prefix;
+function between(min, max) {return Math.floor(Math.random() * (max - min) + min)}
 
 client.once('ready', () => {
 console.log('Ready!');
-client.user.setActivity(`${prefix}send | You can send messages!`,{ type: 'WATCHING' });
+client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });
 });
 
 client.on('message', async message =>{
 if (message.content.startsWith(prefix)===true&&message.author.bot===false) {
 const command = message.content.substring(prefix.length,message.content.length);
-if (command.startsWith("")===true) {}
 
 if (command.startsWith("send")===true) {
 const args = command.split(" ");
@@ -32,6 +32,9 @@ message.author.send(`:incoming_envelope: | Successfully sent a message to: **${u
 message.author.send(`:x: | Incorrect command syntax\r\nType the ID of the user you want to send message to\r\nAnd then type the message\r\nExample: _${prefix}send <user id> <message>_`);
 }}
 
+if (command.startsWith("id")===true) {
+if (message.mentions.members.first()!=null) {message.reply(`here's **${message.mentions.members.first().tag}**'s user ID: ${message.mentions.members.first().id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
+}
 }});
 
 client.on('message',async message=>{
