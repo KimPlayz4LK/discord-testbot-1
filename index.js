@@ -33,7 +33,7 @@ message.author.send(`:x: | Incorrect command syntax\r\nType the ID of the user y
 }}
 
 if (command.startsWith("id")===true) {
-if (message.mentions.members.first()!=null) {message.reply(`here's **${message.mentions.members.first().tag}**'s user ID: ${message.mentions.members.first().id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
+if (message.mentions.members.first()!=null) {message.reply(`here's **${message.mentions.members.first().username}**'s user ID: ${message.mentions.members.first().id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
 }
 }});
 
