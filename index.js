@@ -33,8 +33,12 @@ message.author.send(`:x: | Incorrect command syntax\r\nType the ID of the user y
 }}
 
 if (command.startsWith("id")===true) {
-if (message.mentions.members.first()!=null) {message.reply(`here's **${message.mentions.members.first().username}**'s user ID: ${message.mentions.members.first().id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
+if (message.mentions.members.first()!=null) {
+var args = command.split(" ");
+var user = message.guild.members.cache.get(message.mentions.members.first().id);
+message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
 }
+
 }});
 
 client.on('message',async message=>{
