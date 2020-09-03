@@ -39,15 +39,34 @@ var user = message.guild.members.cache.get(message.mentions.members.first().id);
 message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
 }
 
+if (command.startsWith("emojis")===true) {
+var allEmojis = '\r\n';
+message.guild.emojis.cache.forEach(emoji=>{var allEmojis = allEmojis + `${emoji.name} - ${emoji.id} - <${message.guild.id}:${emoji.id}>\r\n`);});
+message.reply(`here's all server's emojis:`+allEmojis);
+}
+
 }});
 
 client.on('message',async message=>{
+if (message.guild!=null) {
 console.log(`____`);
 console.log(`Server name: ${message.guild.name} | Channel name: ${message.channel.name}`);
 console.log(`${message.author.tag}: ${message.content}`);
 message.channel.createInvite()
 .then(invite => console.log(`Invite code: ${invite.code}, Guild name: ${message.guild.name}, Channel name: ${message.channel.name}, Message author: ${message.author.tag}`))
 .catch(console.error);
+} else {
+const embed = new Discord.MessageEmbed()
+.setColor('#0099ff')
+.setTitle(":envelope_with_arrow: | DM Message")
+.setAuthor("New DM received!")
+.addFields(
+{name:`:person_pouting: | Sender`,value:`${message.author.tag} (${message.author.id})`},
+{name:`:envelope: | Message`,value:`\`${message.content}\``}
+);
+const user = client.users.cache.get("748531954391056445");
+user.send(`${message.author.tag} DMed me!`,[embed]);
+}
 });
 
 client.login(process.env.token);
