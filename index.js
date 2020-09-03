@@ -41,7 +41,7 @@ message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_
 
 if (command.startsWith("emojis")===true) {
 var allEmojis = '\r\n';
-message.guild.emojis.cache.forEach(emoji=>{var allEmojis = allEmojis + `${emoji.name} - ${emoji.id} - <${message.guild.id}:${emoji.id}>\r\n`);});
+message.guild.emojis.cache.forEach(emoji=>{var allEmojis = allEmojis + `${emoji.name} - ${emoji.id} - \<${message.guild.id}:${emoji.id}\>\r\n`);});
 message.reply(`here's all server's emojis:`+allEmojis);
 }
 
