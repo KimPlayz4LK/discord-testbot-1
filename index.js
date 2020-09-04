@@ -7,6 +7,7 @@ function between(min, max) {return Math.floor(Math.random() * (max - min) + min)
 client.once('ready', () => {
 console.log('Ready!');
 client.user.setActivity(`${prefix}send | ${prefix}id | ${prefix}emojis`,{ type: 'WATCHING' });
+setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id | ${prefix}emojis`,{ type: 'WATCHING' });},10000);
 });
 
 client.on('message', async message =>{
@@ -37,12 +38,6 @@ if (message.mentions.members.first()!=null) {
 var args = command.split(" ");
 var user = message.guild.members.cache.get(message.mentions.members.first().id);
 message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
-}
-
-if (command.startsWith("emojis")===true) {
-var allEmojis = '\r\n';
-message.guild.emojis.cache.forEach(emoji=>{var allEmojis = allEmojis + `${emoji.name} - ${emoji.id} - \<${message.guild.id}:${emoji.id}\>\r\n`);});
-message.reply(`here's all server's emojis:`+allEmojis);
 }
 
 }});
