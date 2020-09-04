@@ -60,6 +60,15 @@ var user = message.guild.members.cache.get(message.mentions.members.first().id);
 message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_box:`);}else{message.reply("please mention a user to get his ID | :x:");}
 }
 
+if (command.toLowerCase().startsWith("typing")===true) {
+message.delete();
+const args = command.toLowerCase().split(" ");
+if (args[1]==="start") {message.channel.startTyping();} else {
+if (args[1]==="stop") {message.channel.stopTyping();}
+} else {
+message.reply(`you should specify the right parameter: stop or start`);
+}}
+
 }});
 
 client.on('message',async message=>{
