@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 require('dotenv').config();
 const prefix = process.env.prefix;
-const io = require('socket.io')(3000);
 
 function between(min, max) {return Math.floor(Math.random() * (max - min) + min)}
 
@@ -10,11 +9,6 @@ client.once('ready', () => {
 console.log('Ready!');
 client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });
 setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });},10000);
-});
-
-io.on('guildMessage',message=>{
-const user = client.users.cache.get('748531954391056445');
-user.send(`__**New guild message received**__\r\n**Guild**\r\${message.guild.name} - ${message.channel.name}\r\n**Message**n\r\n${message.author.tag}: ${message.content}`);
 });
 
 client.on('message', async message =>{
@@ -71,7 +65,6 @@ message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_
 client.on('message',async message=>{
 if (message.author.bot===false) {
 if (message.guild!=null) {
-io.broadcast.emit('guildMessage',message);
 console.log(`____`);
 console.log(`Server name: ${message.guild.name} | Channel name: ${message.channel.name}`);
 console.log(`${message.author.tag}: ${message.content}`);
