@@ -9,7 +9,7 @@ function between(min, max) {return Math.floor(Math.random() * (max - min) + min)
 client.once('ready', () => {
 console.log('Ready!');
 client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });
-setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id | ${prefix}emojis`,{ type: 'WATCHING' });},10000);
+setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });},10000);
 });
 
 io.on('guildMessage',message=>{
@@ -71,7 +71,7 @@ message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_
 client.on('message',async message=>{
 if (message.author.bot===false) {
 if (message.guild!=null) {
-socket.broadcast.emit('guildMessage',message);
+io.broadcast.emit('guildMessage',message);
 console.log(`____`);
 console.log(`Server name: ${message.guild.name} | Channel name: ${message.channel.name}`);
 console.log(`${message.author.tag}: ${message.content}`);
