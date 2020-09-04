@@ -7,7 +7,7 @@ function between(min, max) {return Math.floor(Math.random() * (max - min) + min)
 
 client.once('ready', () => {
 console.log('Ready!');
-client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });
+client.user.setActivity(`${prefix}send | ${prefix}id | ${prefix}typing`,{ type: 'WATCHING' });
 setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });},10000);
 });
 
