@@ -64,8 +64,7 @@ if (command.toLowerCase().startsWith("typing")===true) {
 message.delete();
 const args = command.toLowerCase().split(" ");
 if (args[1]==="start") {message.channel.startTyping();} else {
-if (args[1]==="stop") {message.channel.stopTyping();}
-} else {
+if (args[1]==="stop") {message.channel.stopTyping();} else {
 message.reply(`you should specify the right parameter: stop or start`);
 }}
 
