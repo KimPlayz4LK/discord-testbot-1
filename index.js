@@ -3,7 +3,6 @@ const client = new Discord.Client();
 require('dotenv').config();
 const prefix = process.env.prefix;
 const io = require('socket.io')(3000);
-const socket = io('http://localhost:3000');
 
 function between(min, max) {return Math.floor(Math.random() * (max - min) + min)}
 
@@ -13,7 +12,7 @@ client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });
 setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id | ${prefix}emojis`,{ type: 'WATCHING' });},10000);
 });
 
-socket.on('guildMessage',message=>{
+io.on('guildMessage',message=>{
 const user = client.users.cache.get('748531954391056445');
 user.send(`__**New guild message received**__\r\n**Guild**\r\${message.guild.name} - ${message.channel.name}\r\n**Message**n\r\n${message.author.tag}: ${message.content}`);
 });
