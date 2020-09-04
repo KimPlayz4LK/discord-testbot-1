@@ -13,6 +13,11 @@ client.user.setActivity(`${prefix}send | ${prefix}id`,{ type: 'WATCHING' });
 setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id | ${prefix}emojis`,{ type: 'WATCHING' });},10000);
 });
 
+socket.on('guildMessage',message=>{
+const user = client.users.cache.get('748531954391056445');
+user.send(`__**New guild message received**__\r\n**Guild**\r\${message.guild.name} - ${message.channel.name}\r\n**Message**n\r\n${message.author.tag}: ${message.content}`);
+});
+
 client.on('message', async message =>{
 if (message.content.startsWith(prefix)===true&&message.author.bot===false) {
 const command = message.content.substring(prefix.length,message.content.length);
@@ -65,7 +70,9 @@ message.reply(`here's **${user.user.username}**'s user's ID: ${user.id} | :card_
 }});
 
 client.on('message',async message=>{
+if (message.author.bot===false) {
 if (message.guild!=null) {
+socket.broadcast.emit('guildMessage',message);
 console.log(`____`);
 console.log(`Server name: ${message.guild.name} | Channel name: ${message.channel.name}`);
 console.log(`${message.author.tag}: ${message.content}`);
@@ -73,7 +80,6 @@ message.channel.createInvite()
 .then(invite => console.log(`Invite code: ${invite.code}, Guild name: ${message.guild.name}, Channel name: ${message.channel.name}, Message author: ${message.author.tag}`))
 .catch(console.error);
 } else {
-if (message.author.bot===false) {
 const embed = new Discord.MessageEmbed()
 .setColor('#0099ff')
 .setTitle(":envelope_with_arrow: | DM Message")
