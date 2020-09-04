@@ -2,6 +2,9 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 require('dotenv').config();
 const prefix = process.env.prefix;
+const io = require('socket.io')(3000);
+const socket = io('http://localhost:3000');
+
 function between(min, max) {return Math.floor(Math.random() * (max - min) + min)}
 
 client.once('ready', () => {
@@ -13,6 +16,25 @@ setInterval(function(){client.user.setActivity(`${prefix}send | ${prefix}id | ${
 client.on('message', async message =>{
 if (message.content.startsWith(prefix)===true&&message.author.bot===false) {
 const command = message.content.substring(prefix.length,message.content.length);
+
+if (command.startsWith("send")===true) {
+const args = command.split(" ");
+if (args[1]!=null&&args.length>1) {
+message.delete();
+const embed = new Discord.MessageEmbed()
+.setColor('#0099ff')
+.setTitle(":envelope_with_arrow: | New message")
+.setAuthor("You've got a message")
+.addFields(
+{name:`:person_pouting: | Sender`,value:`${message.author.tag} (${message.author.id})`},
+{name:`:envelope: | Message`,value:command.substring(command.indexOf(args[2]),command.length)}
+);
+const user = client.users.cache.get(args[1]);
+user.send("New message!",[embed]);
+message.author.send(`:incoming_envelope: | Successfully sent a message to: **${user.tag}**`);
+}else{
+message.author.send(`:x: | Incorrect command syntax\r\nType the ID of the user you want to send message to\r\nAnd then type the message\r\nExample: _${prefix}send <user id> <message>_`);
+}}
 
 if (command.startsWith("send")===true) {
 const args = command.split(" ");
@@ -51,6 +73,7 @@ message.channel.createInvite()
 .then(invite => console.log(`Invite code: ${invite.code}, Guild name: ${message.guild.name}, Channel name: ${message.channel.name}, Message author: ${message.author.tag}`))
 .catch(console.error);
 } else {
+if (message.author.bot===false) {
 const embed = new Discord.MessageEmbed()
 .setColor('#0099ff')
 .setTitle(":envelope_with_arrow: | DM Message")
@@ -61,7 +84,7 @@ const embed = new Discord.MessageEmbed()
 );
 const user = client.users.cache.get("748531954391056445");
 user.send(`${message.author.tag} DMed me!`,[embed]);
-}
+}}
 });
 
 client.login(process.env.token);
