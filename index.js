@@ -15,6 +15,24 @@ client.on('message', async message =>{
 if (message.content.startsWith(prefix)===true&&message.author.bot===false) {
 const command = message.content.substring(prefix.length,message.content.length);
 
+
+if (command.startsWith("del ")===true){
+var args = message.content.split(' ');
+if (args[1] == null) {message.channel.send(":x: | Please provide an amout in numbers");} else 
+{if (args[1]+1 < 100 && args[1] > 0){message.channel.bulkDelete(args[1]+1,true);} else {message.channel.send(":x: | Please provide an amout between 1 and 99");}}
+}
+
+if (command.startsWith("pin") == true) {
+const m = await message.channel.send("Ping?");
+var embed = new Discord.MessageEmbed()
+.setColor('#f5cc00')
+.setTitle(':ping_pong: | Ping')
+.setDescription(`${message.author}, here's the bot's ping speed information`)
+.addField("Latency",m.createdTimestamp - message.createdTimestamp + "ms")
+.addField("API Latency",Math.round(client.ws.ping) + "ms")
+m.edit(embed);
+}
+
 if (command.startsWith("senduser")===true) {
 const args = command.split(":");
 if (args[1]!=null&&args.length>1) {
