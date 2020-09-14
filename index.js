@@ -1,33 +1,90 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({partials:['MESSAGE','CHANNEL','REACTION']});
 require('dotenv').config();
 const prefix = process.env.prefix;
 
 function between(min, max) {return Math.floor(Math.random() * (max - min) + min)}
-function newStatus() {
-var id=between(0,9);
-if(id===0){client.user.setActivity(`${prefix}poll | ${client.users.cache.size} poll makers`, { type: 'PLAYING' });}
-if(id===1){client.user.setActivity(`${prefix}trivia | ${client.guilds.cache.size} servers`, { type: 'WATCHING' });}
-if(id===2){client.user.setActivity(`${prefix}fact | ${client.users.cache.size} fact makers in ${client.channels.cache.size} channels`, { type: 'WATCHING' });}
-if(id===3){client.user.setActivity(`${prefix}ping - Changes the ping settings | ${client.users.cache.size} users found`, { type: 'LISTENING' });}
-if(id===4){client.user.setActivity(`${prefix}dmuser - Send a DM to a user | ${client.guilds.cache.size} servers using me`, { type: 'PLAYING' });}
-if(id===5){client.user.setActivity(`${prefix}sendserver - Send a message to a server | ${client.users.cache.size} users to listen`, { type: 'LISTENING' });}
-if(id===6){client.user.setActivity(`${prefix}id - Get someone's user ID | ${client.channels.cache.size} channels to listen`, { type: 'WATCHING' });}
-if(id===7){client.user.setActivity(`${prefix}typing - Toggle typing in a channel | I know ${client.guilds.cache.size} servers`, { type: 'WATCHING' });}
-if(id===8){client.user.setActivity(`${prefix}del - Delete an amount of messages | ${client.channels.cache.size} channels discovered`, { type: 'WATCHING' });}
-if(id===9){client.user.setActivity(`${prefix}help - Get help/list of commands | ${client.users.cache.size} users discovered`, { type: 'WATCHING' });}
-}
 client.once("ready",()=>{
 console.log("Ready!");
 client.user.setActivity(`${prefix}help | ${client.users.cache.size} users using me in ${client.guilds.cache.size} servers`, { type: 'WATCHING' });
 setInterval(function(){client.user.setActivity(`${prefix}help | ${client.users.cache.size} users using me in ${client.guilds.cache.size} servers`, { type: 'WATCHING' });},10000);
-//newStatus();
-//setInterval(newStatus,10000);
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+if (reaction.partial) {try {await reaction.fetch();} catch (error) {console.log('Something went wrong when fetching the message: ', error);return;}}
+const upvotes = reaction.message.reactions.cache.find(r=>r._emoji.name==="👍").count;
+const downvotes = reaction.message.reactions.cache.find(r=>r._emoji.name==="👎").count;
+const totalvotes = upvotes - downvotes;
+if (upvotes>downvotes) {
+reaction.message.channel.messages.fetch(reaction.message.id)
+.then(msg => {const footer = `${msg.embeds[0].footer.text.split('|')[0]}| ${totalvotes} votes`;var embed = new Discord.MessageEmbed().setColor(`#00bb00`).setTitle(msg.embeds[0].title).setFooter(footer);msg.edit(embed);});
+} else if (upvotes<downvotes) {
+reaction.message.channel.messages.fetch(reaction.message.id)
+.then(msg => {const footer = `${msg.embeds[0].footer.text.split('|')[0]}| ${totalvotes} votes`;var embed = new Discord.MessageEmbed().setColor(`#bb0000`).setTitle(msg.embeds[0].title).setFooter(footer);msg.edit(embed);});
+} else {
+reaction.message.channel.messages.fetch(reaction.message.id)
+.then(msg => {const footer = `${msg.embeds[0].footer.text.split('|')[0]}| ${totalvotes} votes`;var embed = new Discord.MessageEmbed().setColor(`#0088dd`).setTitle(msg.embeds[0].title).setFooter(footer);msg.edit(embed);});
+}
+});
+
+client.on('messageReactionRemove', async (reaction, user) => {
+if (reaction.partial) {try {await reaction.fetch();} catch (error) {console.log('Something went wrong when fetching the message: ', error);return;}}
+const upvotes = reaction.message.reactions.cache.find(r=>r._emoji.name==="👍").count;
+const downvotes = reaction.message.reactions.cache.find(r=>r._emoji.name==="👎").count;
+const totalvotes = upvotes - downvotes;
+if (upvotes>downvotes) {
+reaction.message.channel.messages.fetch(reaction.message.id)
+.then(msg => {const footer = `${msg.embeds[0].footer.text.split('|')[0]}| ${totalvotes} votes`;var embed = new Discord.MessageEmbed().setColor(`#00bb00`).setTitle(msg.embeds[0].title).setFooter(footer);msg.edit(embed);});
+} else if (upvotes<downvotes) {
+reaction.message.channel.messages.fetch(reaction.message.id)
+.then(msg => {const footer = `${msg.embeds[0].footer.text.split('|')[0]}| ${totalvotes} votes`;var embed = new Discord.MessageEmbed().setColor(`#bb0000`).setTitle(msg.embeds[0].title).setFooter(footer);msg.edit(embed);});
+} else {
+reaction.message.channel.messages.fetch(reaction.message.id)
+.then(msg => {const footer = `${msg.embeds[0].footer.text.split('|')[0]}| ${totalvotes} votes`;var embed = new Discord.MessageEmbed().setColor(`#0088dd`).setTitle(msg.embeds[0].title).setFooter(footer);msg.edit(embed);});
+}
 });
 
 client.on('message', async message =>{
 if (message.content.startsWith(prefix)===true&&message.author.bot===false) {
 const command = message.content.substring(prefix.length,message.content.length);
+var args = command.split(" ");
+
+if (command.startsWith("vote")===true) {
+message.channel.bulkDelete(1,true);
+if (!args[1]) {
+const embed = new Discord.MessageEmbed()
+.setColor(`#bb0000`)
+.setTitle(`:x: | Error`)
+.addFields(
+{name:`Syntax error`,value:`Incorrect command syntax.`},
+{name:`Example`,value:`${prefix}vote Something to vote about`}
+);
+message.channel.send(`||${message.author}||`,[embed]);
+} else {
+const q = command.substring(4,command.length).trim();
+if (q.length>256) {
+const embed = new Discord.MessageEmbed()
+.setColor(`#bb0000`)
+.setTitle(`:x: | Error`)
+.addFields(
+{name:`Length error`,value:`Your voting subject should be 256 characters long, including spaces and all other characters.\r\nYou cannot do more than 256 characters.`}
+);
+message.channel.send(`||${message.author}||`,[embed]);
+} else {
+const embed = new Discord.MessageEmbed()
+.setColor(`#0088dd`)
+.setTitle(q)
+.setFooter(`Posted by ${message.author.tag} | 0 votes`);
+let role=message.guild.roles.cache.find(x=>x.name==="Vote ping");
+if(!role){var ping="";}else{var ping=`||${role}||`;}
+const channel=message.guild.channels.cache.find(channel=>channel.name==="votes")
+if(!channel){
+message.channel.send(ping,[embed]).then(function(message){message.react("👍");message.react("👎");});
+} else {
+channel.send(ping,[embed]).then(function(message){message.react("👍");message.react("👎");});
+}
+}}
+}
 
 if (command.startsWith("hel")===true) {
 const embed = new Discord.MessageEmbed()
@@ -36,7 +93,7 @@ const embed = new Discord.MessageEmbed()
 .setDescription(`Here's some commands that you can use`)
 .addFields(
 {name:`:speech_balloon: | Messaging`,value:`dmuser, sendserver`,inline:true},
-{name:`:grin: | Fun`,value:`poll, trivia, fact`,inline:true},
+{name:`:grin: | Fun`,value:`poll, trivia, fact, vote`,inline:true},
 {name:`:gear: | Utility`,value:`ping [polls/trivias/facts], id <user mention>, typing <start/stop>, help, delete <amount>`},
 {name:`\u200B`,value:` - Values in [] signs are optional parameters\r\n - Values in <> signs are required parameters\r\n - Some commands should require multiple parameters, to get help just type that command name`},
 );
